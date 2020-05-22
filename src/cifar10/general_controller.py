@@ -227,7 +227,7 @@ class GeneralController(Controller):
             prev_c, prev_h = next_c, next_h
 
             if layer_id > 0:
-                query = tf.concat(anchors_w_1, axis=0)
+                query = tf.concat(anchors_w_1, axis=0)  # anchors_w_1: attention anchor value
                 query = tf.tanh(query + tf.matmul(next_h[-1], self.w_attn_2))
                 query = tf.matmul(query, self.v_attn)
                 logit = tf.concat([-query, query], axis=1)
@@ -257,6 +257,7 @@ class GeneralController(Controller):
                 skip = tf.to_float(skip)
                 skip = tf.reshape(skip, [1, layer_id])
                 skip_count.append(tf.reduce_sum(skip))
+                # anchors: each hidden repr in rnn, the skip value is the weighted sum repr
                 inputs = tf.matmul(skip, tf.concat(anchors, axis=0))
                 inputs /= (1.0 + tf.reduce_sum(skip))
             else:
