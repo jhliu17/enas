@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export CUDA_VISIBLE_DEVICES=3
 export PYTHONPATH="$(pwd)"
 
 python src/cifar10/main.py \
