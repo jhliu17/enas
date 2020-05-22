@@ -10,13 +10,14 @@ Authors: Hieu Pham*, Melody Y. Guan*, Barret Zoph, Quoc V. Le, Jeff Dean
 
 _This is not an official Google product._
 
-## Penn Treebank
-
-**IMPORTANT ERRATA**: The implementation of Language Model on this repository is wrong. Please do not use it. The correct implementation is at the [new repository](https://github.com/google-research/google-research/tree/master/enas_lm). We apologize for the inconvenience.
-
 ## CIFAR-10
 
 To run the experiments on CIFAR-10, please first download the [dataset](https://www.cs.toronto.edu/~kriz/cifar.html). Again, all hyper-parameters are specified in the scripts that we descibe below.
+
+jhliu: 可以直接运行以下脚本下载cifar10数据集到指定位置:
+```
+./scripts/cifar10_download.sh
+```
 
 To run the ENAS experiments on the _macro search space_ as described in our paper, please use the following scripts:
 ```
@@ -44,6 +45,10 @@ index_1, op_1, index_2, op_2
 Here, `index_1` and `index_2` can be any previous index. `op_1` and `op_2` can be `[0, 1, 2, 3, 4]`, corresponding to `separable_conv_3x3`, `separable_conv_5x5`, `average_pooling`, `max_pooling`, `identity`.
 
 A micro architecture can be specified by two sequences of cells concatenated after each other, as shown in our script `./scripts/cifar10_micro_final.sh`
+
+## Penn Treebank
+
+**IMPORTANT ERRATA**: The implementation of Language Model on this repository is wrong. Please do not use it. The correct implementation is at the [new repository](https://github.com/google-research/google-research/tree/master/enas_lm). We apologize for the inconvenience.
 
 ## Citations
 
