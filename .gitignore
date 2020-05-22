@@ -106,4 +106,7 @@ ENV/
 .mypy_cache/
 
 # cifar data
-./data/cifar/
+data/cifar10/
+
+# vscode
+.vscode
