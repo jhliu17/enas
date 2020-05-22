@@ -1,5 +1,11 @@
 # Efficient Neural Architecture Search via Parameter Sharing
 
+```
+Notes:
+测试环境: python==2.7, tensorflow-gpu==1.13
+显存: 22GB
+```
+
 Authors' implementation of "Efficient Neural Architecture Search via Parameter Sharing" (2018) in TensorFlow.
 
 Includes code for CIFAR-10 image classification and Penn Tree Bank language modeling tasks.
@@ -14,7 +20,7 @@ _This is not an official Google product._
 
 To run the experiments on CIFAR-10, please first download the [dataset](https://www.cs.toronto.edu/~kriz/cifar.html). Again, all hyper-parameters are specified in the scripts that we descibe below.
 
-jhliu: 可以直接运行以下脚本下载cifar10数据集到指定位置:
+可以直接运行以下脚本下载cifar10数据集到指定位置:
 ```
 ./scripts/cifar10_download.sh
 ```
