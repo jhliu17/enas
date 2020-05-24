@@ -1,31 +1,44 @@
 #!/bin/bash
-
+export CUDA_VISIBLE_DEVICES=3
 export PYTHONPATH="$(pwd)"
 
+# fixed_arc="0"
+# fixed_arc="$fixed_arc 3 0"
+# fixed_arc="$fixed_arc 0 1 0"
+# fixed_arc="$fixed_arc 2 0 0 1"
+# fixed_arc="$fixed_arc 2 0 0 0 0"
+# fixed_arc="$fixed_arc 3 1 1 0 1 0"
+# fixed_arc="$fixed_arc 2 0 0 0 0 0 1"
+# fixed_arc="$fixed_arc 2 0 1 1 0 1 1 1"
+# fixed_arc="$fixed_arc 1 0 1 1 1 0 1 0 1"
+# fixed_arc="$fixed_arc 0 0 0 0 0 0 0 0 0 0"
+# fixed_arc="$fixed_arc 2 0 0 0 0 0 1 0 0 0 0"
+# fixed_arc="$fixed_arc 0 1 0 0 1 1 0 0 0 0 1 1"
+# fixed_arc="$fixed_arc 2 0 1 0 0 0 0 0 1 0 1 1 0"
+# fixed_arc="$fixed_arc 1 0 0 1 0 0 0 1 1 1 0 1 0 1"
+# fixed_arc="$fixed_arc 0 1 1 0 1 0 1 0 0 0 0 0 1 0 0"
+# fixed_arc="$fixed_arc 2 0 0 1 0 0 0 0 0 0 0 1 0 1 0 1"
+# fixed_arc="$fixed_arc 2 0 1 0 0 0 1 0 0 1 1 1 1 0 0 1 0"
+# fixed_arc="$fixed_arc 2 0 0 0 0 1 0 1 0 1 0 0 1 0 1 0 0 1"
+# fixed_arc="$fixed_arc 3 0 1 1 0 1 0 0 0 0 0 1 0 1 0 1 0 0 0"
+# fixed_arc="$fixed_arc 3 0 1 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1"
+# fixed_arc="$fixed_arc 0 1 0 0 1 0 1 1 0 0 0 1 0 0 0 0 0 1 1 0 0"
+# fixed_arc="$fixed_arc 3 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 0"
+# fixed_arc="$fixed_arc 0 1 0 1 0 1 0 0 0 0 0 0 0 0 1 0 1 0 0 1 0 0 0"
+# fixed_arc="$fixed_arc 0 1 1 0 0 0 1 1 1 0 1 0 0 0 1 0 1 0 0 1 1 0 0 0"
+
 fixed_arc="0"
-fixed_arc="$fixed_arc 3 0"
-fixed_arc="$fixed_arc 0 1 0"
-fixed_arc="$fixed_arc 2 0 0 1"
-fixed_arc="$fixed_arc 2 0 0 0 0"
-fixed_arc="$fixed_arc 3 1 1 0 1 0"
-fixed_arc="$fixed_arc 2 0 0 0 0 0 1"
-fixed_arc="$fixed_arc 2 0 1 1 0 1 1 1"
-fixed_arc="$fixed_arc 1 0 1 1 1 0 1 0 1"
-fixed_arc="$fixed_arc 0 0 0 0 0 0 0 0 0 0"
-fixed_arc="$fixed_arc 2 0 0 0 0 0 1 0 0 0 0"
-fixed_arc="$fixed_arc 0 1 0 0 1 1 0 0 0 0 1 1"
-fixed_arc="$fixed_arc 2 0 1 0 0 0 0 0 1 0 1 1 0"
-fixed_arc="$fixed_arc 1 0 0 1 0 0 0 1 1 1 0 1 0 1"
-fixed_arc="$fixed_arc 0 1 1 0 1 0 1 0 0 0 0 0 1 0 0"
-fixed_arc="$fixed_arc 2 0 0 1 0 0 0 0 0 0 0 1 0 1 0 1"
-fixed_arc="$fixed_arc 2 0 1 0 0 0 1 0 0 1 1 1 1 0 0 1 0"
-fixed_arc="$fixed_arc 2 0 0 0 0 1 0 1 0 1 0 0 1 0 1 0 0 1"
-fixed_arc="$fixed_arc 3 0 1 1 0 1 0 0 0 0 0 1 0 1 0 1 0 0 0"
-fixed_arc="$fixed_arc 3 0 1 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1"
-fixed_arc="$fixed_arc 0 1 0 0 1 0 1 1 0 0 0 1 0 0 0 0 0 1 1 0 0"
-fixed_arc="$fixed_arc 3 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 0"
-fixed_arc="$fixed_arc 0 1 0 1 0 1 0 0 0 0 0 0 0 0 1 0 1 0 0 1 0 0 0"
-fixed_arc="$fixed_arc 0 1 1 0 0 0 1 1 1 0 1 0 0 0 1 0 1 0 0 1 1 0 0 0"
+fixed_arc="$fixed_arc 0 0"
+fixed_arc="$fixed_arc 5 0 0"
+fixed_arc="$fixed_arc 3 1 0 1"
+fixed_arc="$fixed_arc 3 0 1 1 1"
+fixed_arc="$fixed_arc 3 0 0 1 1 0"
+fixed_arc="$fixed_arc 3 1 0 0 0 0 1"
+fixed_arc="$fixed_arc 3 0 0 1 1 0 1 0"
+fixed_arc="$fixed_arc 1 1 1 1 0 0 0 0 0"
+fixed_arc="$fixed_arc 3 1 0 0 0 1 0 1 0 0"
+fixed_arc="$fixed_arc 1 0 0 0 1 0 0 0 1 0 0"
+fixed_arc="$fixed_arc 0 0 0 0 0 0 0 0 0 1 0 0"
 
 
 python src/cifar10/main.py \
@@ -40,10 +53,10 @@ python src/cifar10/main.py \
   --eval_every_epochs=1 \
   --child_fixed_arc="${fixed_arc}" \
   --child_use_aux_heads \
-  --child_num_layers=24 \
-  --child_out_filters=96 \
+  --child_num_layers=12 \
+  --child_out_filters=36 \
   --child_l2_reg=2e-4 \
-  --child_num_branches=4 \
+  --child_num_branches=6 \
   --child_num_cell_layers=5 \
   --child_keep_prob=0.50 \
   --child_lr_cosine \

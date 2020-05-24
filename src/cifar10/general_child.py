@@ -423,9 +423,9 @@ class GeneralChild(Model):
                     out = batch_norm(out, is_training,
                                      data_format=self.data_format)
             elif count == 4:
-                pass
+                out = self._pool_branch(inputs, is_training, out_filters, "avg", start_idx=0)
             elif count == 5:
-                pass
+                out = self._pool_branch(inputs, is_training, out_filters, "max", start_idx=0)
             else:
                 raise ValueError(
                     "Unknown operation number '{0}'".format(count))
@@ -473,6 +473,7 @@ class GeneralChild(Model):
                 out = batch_norm(out, is_training,
                                  data_format=self.data_format)
 
+        print(out)
         if layer_id > 0:
             if self.whole_channels:
                 skip_start = start_idx + 1
@@ -740,6 +741,9 @@ class GeneralChild(Model):
             fixed_arc = np.array([int(x)
                                   for x in self.fixed_arc.split(" ") if x])
             self.sample_arc = fixed_arc
+
+        # debug
+        print(self.sample_arc)
 
         self._build_train()
         self._build_valid()
