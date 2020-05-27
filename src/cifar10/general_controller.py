@@ -40,6 +40,8 @@ class GeneralController(Controller):
                  num_replicas=None,
                  skip_target=0.8,
                  skip_weight=0.5,
+                 para_target=None,
+                 para_weight=None,
                  name="controller",
                  *args,
                  **kwargs):
@@ -71,6 +73,8 @@ class GeneralController(Controller):
 
         self.skip_target = skip_target
         self.skip_weight = skip_weight
+        self.para_target = tf.constant(para_target)
+        self.para_weight = tf.constant(para_weight)
 
         self.optim_algo = optim_algo
         self.sync_replicas = sync_replicas
@@ -284,7 +288,8 @@ class GeneralController(Controller):
         child_model.build_valid_rl()
         self.valid_acc = (tf.to_float(child_model.valid_shuffle_acc) /
                           tf.to_float(child_model.batch_size))
-        self.reward = self.valid_acc
+        self.parameter_nums = self.cal_parameters_num()
+        self.reward = self.valid_acc - tf.abs(tf.cast(self.parameter_nums, tf.float32) - self.para_target) / self.para_target  * self.para_weight
 
         normalize = tf.to_float(self.num_layers * (self.num_layers - 1) / 2)
         self.skip_rate = tf.to_float(self.skip_count) / normalize
@@ -327,3 +332,41 @@ class GeneralController(Controller):
             sync_replicas=self.sync_replicas,
             num_aggregate=self.num_aggregate,
             num_replicas=self.num_replicas)
+
+    def cal_parameters_num(self):
+        '''
+        Only support for whole channel training
+        '''
+        start = 0
+        branch = []
+
+        parameters_matrix_as_head = tf.constant([3 * 36 + 3 * 3 * 36 * 36,
+                                                 3 * 36 + 3 * 3 * 36 + 36 * 36,
+                                                 3 * 36 + 5 * 5 * 36 * 36,
+                                                 3 * 36 + 5 * 5 * 36 + 36 * 36,
+                                                 3 * 36,
+                                                 3 * 36])
+
+        parameters_matrix_as_body = tf.constant([36 * 36 + 3 * 3 * 36 * 36,
+                                                 36 * 36 + 3 * 3 * 36 + 36 * 36,
+                                                 36 * 36 + 5 * 5 * 36 * 36,
+                                                 36 * 36 + 5 * 5 * 36 + 36 * 36,
+                                                 36 * 36,
+                                                 36 * 36])
+
+        # allocate parameters layer
+        for layer_id in range(self.num_layers):
+            end = start + 1 + layer_id
+            branch.append(self.sample_arc[start])
+            start = end
+
+        param = []
+        # cal parameters num
+        for layer_id in range(self.num_layers):
+            if layer_id == 0:
+                param.append(parameters_matrix_as_head[branch[layer_id]])
+            else:
+                param.append(parameters_matrix_as_body[branch[layer_id]])
+
+        param_num = tf.add_n(param)
+        return param_num

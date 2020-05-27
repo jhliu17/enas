@@ -76,6 +76,8 @@ DEFINE_float("controller_temperature", None, "")
 DEFINE_float("controller_entropy_weight", None, "")
 DEFINE_float("controller_skip_target", 0.8, "")
 DEFINE_float("controller_skip_weight", 0.0, "")
+DEFINE_float("controller_parameters_target", 30.0, "")
+DEFINE_float("controller_parameters_target_weight", 0.8, "")
 DEFINE_integer("controller_num_aggregate", 1, "")
 DEFINE_integer("controller_num_replicas", 1, "")
 DEFINE_integer("controller_train_steps", 50, "")
@@ -147,6 +149,8 @@ def get_ops(images, labels):
             search_whole_channels=FLAGS.controller_search_whole_channels,
             skip_target=FLAGS.controller_skip_target,
             skip_weight=FLAGS.controller_skip_weight,
+            para_target=FLAGS.controller_parameters_target,
+            para_weight=FLAGS.controller_parameters_target_weight,
             num_cells=FLAGS.child_num_cells,
             num_layers=FLAGS.child_num_layers,
             num_branches=FLAGS.child_num_branches,
@@ -184,6 +188,7 @@ def get_ops(images, labels):
             "entropy": controller_model.sample_entropy,
             "sample_arc": controller_model.sample_arc,
             "skip_rate": controller_model.skip_rate,
+            "para_nums": controller_model.parameter_nums
         }
     else:
         assert not FLAGS.controller_training, (
@@ -290,8 +295,9 @@ def train():
                                 controller_ops["baseline"],
                                 controller_ops["skip_rate"],
                                 controller_ops["train_op"],
+                                controller_ops["para_nums"]
                             ]
-                            loss, entropy, lr, gn, val_acc, bl, skip, _ = sess.run(
+                            loss, entropy, lr, gn, val_acc, bl, skip, _, para_n = sess.run(
                                 run_ops)
                             controller_step = sess.run(
                                 controller_ops["train_step"])
@@ -307,6 +313,7 @@ def train():
                                 log_string += " |g|={:<8.4f}".format(gn)
                                 log_string += " acc={:<6.4f}".format(val_acc)
                                 log_string += " bl={:<5.2f}".format(bl)
+                                log_string += " para_num={:<6d}".format(para_n)
                                 log_string += " mins={:<.2f}".format(
                                     float(curr_time - start_time) / 60)
                                 print(log_string)

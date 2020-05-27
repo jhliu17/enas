@@ -37,5 +37,7 @@ python src/cifar10/main.py \
   --controller_op_tanh_reduce=2.5 \
   --controller_skip_target=0.4 \
   --controller_skip_weight=0.8 \
+  --controller_parameters_target 100000 \
+  --controller_parameters_target_weight 0.7 \
   "$@"
 
