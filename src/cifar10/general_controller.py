@@ -340,13 +340,7 @@ class GeneralController(Controller):
         start = 0
         branch = []
 
-        parameters_matrix_as_head = tf.constant([3 * 36 + 3 * 3 * 36 * 36,
-                                                 3 * 36 + 3 * 3 * 36 + 36 * 36,
-                                                 3 * 36 + 5 * 5 * 36 * 36,
-                                                 3 * 36 + 5 * 5 * 36 + 36 * 36,
-                                                 3 * 36,
-                                                 3 * 36])
-
+        parameters_head = tf.constant(3 * 3 * 3 * 36)
         parameters_matrix_as_body = tf.constant([36 * 36 + 3 * 3 * 36 * 36,
                                                  36 * 36 + 3 * 3 * 36 + 36 * 36,
                                                  36 * 36 + 5 * 5 * 36 * 36,
@@ -360,13 +354,10 @@ class GeneralController(Controller):
             branch.append(self.sample_arc[start])
             start = end
 
-        param = []
+        param = [parameters_head]
         # cal parameters num
         for layer_id in range(self.num_layers):
-            if layer_id == 0:
-                param.append(parameters_matrix_as_head[branch[layer_id]])
-            else:
-                param.append(parameters_matrix_as_body[branch[layer_id]])
+            param.append(parameters_matrix_as_body[branch[layer_id]])
 
         param_num = tf.add_n(param)
         return param_num
