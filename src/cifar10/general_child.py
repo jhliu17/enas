@@ -217,8 +217,8 @@ class GeneralChild(Model):
                             layer_id, layers, start_idx, out_filters, is_training)
                     layers.append(x)
                     if layer_id in self.pool_layers:
-                        if self.fixed_arc is not None:
-                            out_filters *= 2
+                        # if self.fixed_arc is not None:
+                        #     out_filters *= 2
                         with tf.variable_scope("pool_at_{0}".format(layer_id)):
                             pooled_layers = []
                             for i, layer in enumerate(layers):
@@ -401,27 +401,20 @@ class GeneralChild(Model):
                 inp_c = inputs.get_shape()[3].value
             elif self.data_format == "NCHW":
                 inp_c = inputs.get_shape()[1].value
-
             count = self.sample_arc[start_idx]
-            if count in [0, 1, 2, 3]:
-                size = [3, 3, 5, 5]
-                filter_size = size[count]
-                with tf.variable_scope("conv_1x1"):
-                    w = create_weight("w", [1, 1, inp_c, out_filters])
-                    out = tf.nn.relu(inputs)
-                    out = tf.nn.conv2d(out, w, [1, 1, 1, 1], "SAME",
-                                       data_format=self.data_format)
-                    out = batch_norm(out, is_training,
-                                     data_format=self.data_format)
-
-                with tf.variable_scope("conv_{0}x{0}".format(filter_size)):
-                    w = create_weight(
-                        "w", [filter_size, filter_size, out_filters, out_filters])
-                    out = tf.nn.relu(out)
-                    out = tf.nn.conv2d(out, w, [1, 1, 1, 1], "SAME",
-                                       data_format=self.data_format)
-                    out = batch_norm(out, is_training,
-                                     data_format=self.data_format)
+            print('Layer input shape: %s and count: %s' % (inp_c, count))
+            if count == 0:
+                out = self._conv_branch(inputs, 3, is_training, out_filters, out_filters,
+                                        start_idx=0, separable=False)
+            elif count == 1:
+                out = self._conv_branch(inputs, 3, is_training, out_filters, out_filters,
+                                        start_idx=0, separable=True)
+            elif count == 2:
+                out = self._conv_branch(inputs, 5, is_training, out_filters, out_filters,
+                                        start_idx=0, separable=False)
+            elif count == 3:
+                out = self._conv_branch(inputs, 5, is_training, out_filters, out_filters,
+                                        start_idx=0, separable=True)
             elif count == 4:
                 out = self._pool_branch(inputs, is_training, out_filters, "avg", start_idx=0)
             elif count == 5:
@@ -473,36 +466,39 @@ class GeneralChild(Model):
                 out = batch_norm(out, is_training,
                                  data_format=self.data_format)
 
-        print(out)
+        # print(out)
         if layer_id > 0:
             if self.whole_channels:
                 skip_start = start_idx + 1
             else:
                 skip_start = start_idx + 2 * self.num_branches
             skip = self.sample_arc[skip_start: skip_start + layer_id]
-            total_skip_channels = np.sum(skip) + 1
+            # total_skip_channels = np.sum(skip) + 1
 
             res_layers = []
             for i in range(layer_id):
                 if skip[i] == 1:
                     res_layers.append(prev_layers[i])
             prev = res_layers + [out]
+            out = tf.add_n(prev)
+            out = batch_norm(out, is_training,
+                             data_format=self.data_format)
 
-            if self.data_format == "NHWC":
-                prev = tf.concat(prev, axis=3)
-            elif self.data_format == "NCHW":
-                prev = tf.concat(prev, axis=1)
+            # if self.data_format == "NHWC":
+            #     prev = tf.concat(prev, axis=3)
+            # elif self.data_format == "NCHW":
+            #     prev = tf.concat(prev, axis=1)
 
-            out = prev
-            with tf.variable_scope("skip"):
-                w = create_weight(
-                    "w", [1, 1, total_skip_channels * out_filters, out_filters])
-                out = tf.nn.relu(out)
-                out = tf.nn.conv2d(
-                    out, w, [1, 1, 1, 1], "SAME", data_format=self.data_format)
-                out = batch_norm(out, is_training,
-                                 data_format=self.data_format)
-
+            # out = prev
+            # with tf.variable_scope("skip"):
+            #     w = create_weight(
+            #         "w", [1, 1, total_skip_channels * out_filters, out_filters])
+            #     out = tf.nn.relu(out)
+            #     out = tf.nn.conv2d(
+            #         out, w, [1, 1, 1, 1], "SAME", data_format=self.data_format)
+            #     out = batch_norm(out, is_training,
+            #                      data_format=self.data_format)
+        print('Layer output shape: %s and count: %s' % (out.get_shape()[1].value, count))
         return out
 
     def _conv_branch(self, inputs, filter_size, is_training, count, out_filters,
